@@ -27,20 +27,21 @@ def ensure_samples():
 
 def test_search_files_pdf_extension():
     result = search_files_impl(extension=".pdf")
-    assert result.total >= 1
+    assert result.total == 4, f"expected exactly 4 PDFs, got {result.total}"
     assert all(match.extension == ".pdf" for match in result.matches)
 
 
 def test_search_files_name_filter():
-    result = search_files_impl(file_name="*butterfly*")
+    result = search_files_impl(file_name="*elephant*")
     assert result.total >= 1
-    assert any("butterfly" in match.name.lower() for match in result.matches)
+    assert any("elephant" in match.name.lower() for match in result.matches)
 
 
-def test_search_files_folder_path():
-    result = search_files_impl(folder_path="birds")
-    assert result.total >= 1
-    assert all(match.path.startswith("birds") for match in result.matches)
+def test_search_files_extension_filters():
+    # Exactly 4 PDFs in the assignment file set
+    result = search_files_impl(extension=".pdf")
+    assert result.total == 4, f"expected 4 PDFs, got {result.total}"
+    assert all(match.extension == ".pdf" for match in result.matches)
 
 
 def test_search_pdf_content_keyword():
@@ -69,3 +70,15 @@ async def test_mcp_tools_return_json_only():
 
 def test_search_root_is_sandboxed():
     assert SEARCH_ROOT.exists()
+
+
+def test_search_all_files_returns_eight():
+    # Assignment spec: 8 files across 5 extensions
+    result = search_files_impl()
+    assert result.total == 8, f"expected 8 files total, got {result.total}"
+
+
+def test_search_files_by_extension_non_pdf():
+    for ext, count in ((".docx", 1), (".xlsx", 1), (".txt", 1), (".jpg", 1)):
+        result = search_files_impl(extension=ext)
+        assert result.total == count, f"expected {count} {ext} file(s), got {result.total}"

@@ -23,7 +23,13 @@ def _resolve_search_root(raw: str | None) -> Path:
 
 
 SEARCH_ROOT: Path = _resolve_search_root(os.getenv("SEARCH_ROOT"))
-OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "openai:gpt-5.4")
+OPENAI_API_KEY: str | None = os.getenv("OPENAI_API_KEY")
+OPENAI_BASE_URL: str = (
+    os.getenv("OPENAI_BASE_URL")
+    or os.getenv("OPENAI_API_BASE_URL")
+    or "https://api.minimax.io/v1"
+)
+OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "MiniMax-M2.7")
 MICROSOFT_LEARN_MCP_URL: str = os.getenv(
     "MICROSOFT_LEARN_MCP_URL", "https://learn.microsoft.com/api/mcp"
 )
