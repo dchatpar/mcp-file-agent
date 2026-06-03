@@ -20,8 +20,9 @@ description: Route local file queries to sandboxed MCP tools and Microsoft/Azure
    - Keep the final answer at or under **2000 characters**.
 
 3. **General chit-chat or unrelated questions**
-   - Refuse politely.
-   - Explain you only handle local sandboxed file search or Microsoft/Azure documentation.
+   - Do not call any tools.
+   - Respond with this JSON only (no prose):
+     `{"error": "Query out of scope. Only file search and Microsoft/Azure queries are supported."}`
 
 ## Examples
 

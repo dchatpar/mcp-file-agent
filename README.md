@@ -41,7 +41,9 @@ LangChain uses `ChatOpenAI` with `base_url` pointing at MiniMax. `OPENAI_API_BAS
 | `OPENAI_BASE_URL` | `https://api.minimax.io/v1` | MiniMax OpenAI-compatible endpoint |
 | `OPENAI_MODEL` | `MiniMax-M2.7` | Model name on MiniMax |
 | `SEARCH_ROOT` | `data/samples/zoology` | Sandboxed search directory |
+| `FILE_SEARCH_ROOT` | (same as `SEARCH_ROOT`) | Alias for `SEARCH_ROOT` |
 | `MICROSOFT_LEARN_MCP_URL` | `https://learn.microsoft.com/api/mcp` | Learn MCP endpoint |
+| `MS_ANSWER_MAX_CHARS` | `2000` | Max length for Microsoft Learn answers |
 
 ## Run CLI
 
@@ -77,20 +79,71 @@ Regenerate with: `python scripts/generate_samples.py`
 
 ## Verification
 
-**Unit tests (no API key required):**
+### QA matrix
+
+| Check | Command | API key | Expected |
+|-------|---------|---------|----------|
+| Lint | `ruff check src tests scripts` | No | All checks passed |
+| Unit tests | `pytest -v` | No | 32 passed |
+| E2E agent | `python -u scripts/e2e_verify.py` | Yes | 5/5 PASSED (~1–2 min) |
+| Sample data | `python scripts/generate_samples.py` | No | 8 files in `data/samples/zoology/` |
+
+Run lint and unit tests in parallel:
+
 ```bash
-pytest -v
-# 16 passed
+source .venv/bin/activate
+pip install -e ".[dev]"
+python scripts/generate_samples.py
+ruff check src tests scripts & pytest -v & wait
 ```
 
 **E2E (requires `OPENAI_API_KEY` in `.env`):**
+
+Takes about **1–2 minutes**. Use unbuffered output so progress prints appear immediately (`[1/5]` … `[5/5]`):
+
+```bash
+python -u scripts/e2e_verify.py
+```
+
+Checks:
+
+1. PDF files query → local tools, JSON with PDF entries
+2. List all files → local tools, 8 files total
+3. Elephant search → local tools, elephant match in JSON
+4. Azure Blob Storage → Learn MCP only, answer ≤ 2000 chars
+5. Out-of-scope (capital of France) → assignment error JSON, no tools
+
+Interactive CLI smoke test:
+
 ```bash
 file-search-agent
-# Query 1 → What PDF files are available in our system?
-#   → search_files(extension=".pdf") → 4 PDFs, raw JSON ✓
-# Query 2 → What is Azure Blob Storage?
-#   → microsoft_docs_search → Learn MCP, ≤2000 chars ✓
 ```
+
+### Assignment compliance
+
+| Requirement | Implementation | Verified by |
+|-------------|----------------|-------------|
+| Local File Search MCP (in-process) | `mcp/local_file_search.py` via FastMCP | `test_local_mcp.py`, E2E [1–3] |
+| `search_files` metadata filters | name, folder, extension, dates, size | `test_search_files_*` |
+| `search_pdf_content` full-text | pypdf keyword search | `test_search_pdf_content_keyword` |
+| `list_all_files` | lists all sandboxed files | `test_list_all_files_returns_eight`, E2E [2] |
+| `read_pdf_content` | read single PDF by path | `test_read_pdf_content_*` |
+| Microsoft Learn MCP (remote) | `streamable_http` at learn.microsoft.com | `test_learn_mcp.py`, E2E [4] |
+| SKILL routing (local JSON / MS prose / out-of-scope) | `SKILL.md`, `routing.py`, `output_guard.py` | `test_agent_routing.py`, E2E [5] |
+| MiniMax via OpenAI-compatible API | `ChatOpenAI` + `extra_body` (thinking disabled) | `agent_factory.py`, E2E all |
+| Sandboxed `SEARCH_ROOT` | path traversal rejected | `test_security.py` |
+| 8 sample zoology files | `data/samples/zoology/` | `generate_samples.py`, E2E [2] |
+
+### Dependencies
+
+Pinned full environment (after `pip install -e ".[dev]"`):
+
+```bash
+pip install -r requirements.txt
+pip install -e .
+```
+
+Or install from project metadata only: `pip install -e ".[dev]"`.
 
 ## GitHub
 

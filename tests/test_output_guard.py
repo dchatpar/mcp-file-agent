@@ -4,8 +4,6 @@ from __future__ import annotations
 
 import json
 
-import pytest
-
 from file_search_agent.output_guard import (
     enforce_json_only,
     extract_json_payload,

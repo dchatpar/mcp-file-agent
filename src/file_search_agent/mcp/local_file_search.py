@@ -15,11 +15,15 @@ from file_search_agent.models import (
     ErrorResult,
     FileMatch,
     PdfContentMatch,
+    ReadPdfContentResult,
     SearchFilesResult,
     SearchPdfContentResult,
 )
 
 mcp = FastMCP("Local File Search")
+
+PDF_READ_MAX_PAGES = 3
+PDF_READ_MAX_CHARS = 50_000
 
 
 def _resolve_in_sandbox(path: str | None) -> Path | None:
@@ -200,6 +204,48 @@ def search_pdf_content_impl(keyword: str) -> SearchPdfContentResult | ErrorResul
     return SearchPdfContentResult(keyword=keyword, matches=matches, total=len(matches))
 
 
+def list_all_files_impl() -> SearchFilesResult:
+    return search_files_impl()
+
+
+def _extract_pdf_text(path: Path, *, max_pages: int = PDF_READ_MAX_PAGES) -> str:
+    reader = PdfReader(str(path))
+    parts: list[str] = []
+    total_chars = 0
+    for page in reader.pages[:max_pages]:
+        text = page.extract_text() or ""
+        if total_chars + len(text) > PDF_READ_MAX_CHARS:
+            text = text[: PDF_READ_MAX_CHARS - total_chars]
+        parts.append(text)
+        total_chars += len(text)
+        if total_chars >= PDF_READ_MAX_CHARS:
+            break
+    return " ".join(parts).strip()
+
+
+def read_pdf_content_impl(file_path: str) -> ReadPdfContentResult | ErrorResult:
+    if not file_path or not file_path.strip():
+        return ErrorResult(error="file_path is required")
+
+    resolved = _resolve_in_sandbox(file_path)
+    if resolved is None:
+        return ErrorResult(error="file_path outside sandbox or not found")
+
+    if not resolved.is_file():
+        return ErrorResult(error=f"not a file: {file_path}")
+
+    if resolved.suffix.lower() != ".pdf":
+        return ErrorResult(error=f"not a valid PDF: {file_path}")
+
+    try:
+        content = _extract_pdf_text(resolved)
+    except Exception as exc:
+        return ErrorResult(error=f"failed to read PDF: {exc}")
+
+    rel = str(resolved.relative_to(SEARCH_ROOT.resolve()))
+    return ReadPdfContentResult(file_path=rel, content=content)
+
+
 @mcp.tool
 def search_files(
     file_name: str | None = None,
@@ -238,6 +284,19 @@ def search_files(
 def search_pdf_content(keyword: str) -> str:
     """Full-text keyword search across PDF files under SEARCH_ROOT."""
     result = search_pdf_content_impl(keyword)
+    return result.model_dump_json()
+
+
+@mcp.tool
+def list_all_files() -> str:
+    """List all files under SEARCH_ROOT. Returns JSON only."""
+    return list_all_files_impl().model_dump_json()
+
+
+@mcp.tool
+def read_pdf_content(file_path: str) -> str:
+    """Read text content from a PDF file within SEARCH_ROOT. Returns JSON only."""
+    result = read_pdf_content_impl(file_path)
     return result.model_dump_json()
 
 

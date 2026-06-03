@@ -33,5 +33,10 @@ class SearchPdfContentResult(BaseModel):
     total: int = 0
 
 
+class ReadPdfContentResult(BaseModel):
+    file_path: str
+    content: str
+
+
 class ErrorResult(BaseModel):
     error: str

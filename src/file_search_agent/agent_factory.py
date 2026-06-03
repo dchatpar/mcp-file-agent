@@ -6,9 +6,9 @@ from pathlib import Path
 
 from fastmcp import Client
 from langchain.agents import create_agent
-from langchain_openai import ChatOpenAI
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_mcp_adapters.tools import load_mcp_tools
+from langchain_openai import ChatOpenAI
 
 from file_search_agent.config import (
     MICROSOFT_LEARN_MCP_URL,
@@ -55,6 +55,13 @@ def _create_chat_model() -> ChatOpenAI:
         model=OPENAI_MODEL,
         api_key=OPENAI_API_KEY,
         base_url=OPENAI_BASE_URL,
+        temperature=0,
+        timeout=120,
+        max_retries=2,
+        extra_body={
+            "reasoning_split": True,
+            "thinking": {"type": "disabled"},
+        },
     )
 
 

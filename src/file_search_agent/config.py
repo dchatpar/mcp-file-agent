@@ -22,7 +22,9 @@ def _resolve_search_root(raw: str | None) -> Path:
     return path.resolve()
 
 
-SEARCH_ROOT: Path = _resolve_search_root(os.getenv("SEARCH_ROOT"))
+SEARCH_ROOT: Path = _resolve_search_root(
+    os.getenv("SEARCH_ROOT") or os.getenv("FILE_SEARCH_ROOT")
+)
 OPENAI_API_KEY: str | None = os.getenv("OPENAI_API_KEY")
 OPENAI_BASE_URL: str = (
     os.getenv("OPENAI_BASE_URL")

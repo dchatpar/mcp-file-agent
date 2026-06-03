@@ -11,6 +11,8 @@ from fastmcp import Client
 from file_search_agent.config import SEARCH_ROOT
 from file_search_agent.mcp.local_file_search import (
     create_server,
+    list_all_files_impl,
+    read_pdf_content_impl,
     search_files_impl,
     search_pdf_content_impl,
 )
@@ -82,3 +84,32 @@ def test_search_files_by_extension_non_pdf():
     for ext, count in ((".docx", 1), (".xlsx", 1), (".txt", 1), (".jpg", 1)):
         result = search_files_impl(extension=ext)
         assert result.total == count, f"expected {count} {ext} file(s), got {result.total}"
+
+
+def test_list_all_files_returns_eight():
+    result = list_all_files_impl()
+    assert result.total == 8
+
+
+def test_read_pdf_content_elephant_study():
+    result = read_pdf_content_impl("african_elephant_study.pdf")
+    data = json.loads(result.model_dump_json())
+    assert "content" in data
+    assert len(data["content"]) > 0
+    assert "elephant" in data["content"].lower() or "Loxodonta" in data["content"]
+
+
+@pytest.mark.asyncio
+async def test_mcp_list_all_and_read_pdf_tools():
+    server = create_server()
+    async with Client(server) as client:
+        list_result = await client.call_tool("list_all_files", {})
+        list_data = json.loads(list_result.content[0].text)
+        assert list_data["total"] == 8
+
+        read_result = await client.call_tool(
+            "read_pdf_content",
+            {"file_path": "african_elephant_study.pdf"},
+        )
+        read_data = json.loads(read_result.content[0].text)
+        assert "content" in read_data

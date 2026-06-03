@@ -129,10 +129,10 @@ def write_samples(root: Path) -> None:
         "Date: March 12-28, 2024\n"
         "Observer: Dr. S. Patel, Wildlife Conservation Society\n\n"
         "Day 1: Proboscis monkey troop (11 individuals) observed at riverside foraging zone.\n"
-        "Day 3: Pygmy elephant tracks documented near natural salt lick at GPS 5.2103N, 117.4432E.\n"
+        "Day 3: Pygmy elephant tracks near salt lick at GPS 5.2103N, 117.4432E.\n"
         "Day 7: Orangutan nest count: 34 active nests recorded in 2 km transect.\n"
         "Day 12: Sun bear claw marks identified on Dipterocarp tree at elevation 340 m.\n"
-        "Day 14: Collection of faecal samples from 8 individual sambar deer for dietary analysis.\n",
+        "Day 14: Faecal samples from 8 sambar deer collected for dietary analysis.\n",
         encoding="utf-8",
     )
 

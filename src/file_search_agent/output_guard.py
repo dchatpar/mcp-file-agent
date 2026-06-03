@@ -7,8 +7,24 @@ import re
 from typing import Any
 
 from file_search_agent.config import MS_ANSWER_MAX_CHARS
+from file_search_agent.routing import LOCAL_FILE_TOOL_NAMES
 
-LOCAL_TOOL_NAMES = frozenset({"search_files", "search_pdf_content"})
+# MiniMax / reasoning models may emit thinking blocks in content
+_THINKING_BLOCK_RE = re.compile(
+    r"<think(?:ing)?>[\s\S]*?</think(?:ing)?>",
+    re.IGNORECASE,
+)
+_REDACTED_THINKING_RE = re.compile(
+    r"<think>[\s\S]*?</think>",
+    re.IGNORECASE,
+)
+
+
+def strip_model_artifacts(text: str) -> str:
+    """Remove model reasoning artifacts before JSON extraction or display."""
+    cleaned = _THINKING_BLOCK_RE.sub("", text)
+    cleaned = _REDACTED_THINKING_RE.sub("", cleaned)
+    return cleaned.strip()
 
 
 def is_valid_json(text: str) -> bool:
@@ -23,7 +39,7 @@ def is_valid_json(text: str) -> bool:
 
 
 def extract_json_payload(text: str) -> str | None:
-    stripped = text.strip()
+    stripped = strip_model_artifacts(text)
     if is_valid_json(stripped):
         return stripped
 
@@ -50,7 +66,7 @@ def enforce_json_only(text: str) -> str:
         return json.dumps(
             {
                 "error": "response_must_be_json_only",
-                "original_preview": text[:200],
+                "original_preview": strip_model_artifacts(text)[:200],
             }
         )
     parsed: Any = json.loads(payload)
@@ -59,9 +75,10 @@ def enforce_json_only(text: str) -> str:
 
 def truncate_ms_answer(text: str, max_chars: int | None = None) -> str:
     limit = max_chars if max_chars is not None else MS_ANSWER_MAX_CHARS
-    if len(text) <= limit:
-        return text
-    return text[: limit - 3].rstrip() + "..."
+    cleaned = strip_model_artifacts(text)
+    if len(cleaned) <= limit:
+        return cleaned
+    return cleaned[: limit - 3].rstrip() + "..."
 
 
 def guard_agent_output(text: str, *, used_local_tools: bool) -> str:
@@ -75,9 +92,9 @@ def message_used_local_tools(messages: list[Any]) -> bool:
         tool_calls = getattr(message, "tool_calls", None) or []
         for call in tool_calls:
             name = call.get("name") if isinstance(call, dict) else getattr(call, "name", None)
-            if name in LOCAL_TOOL_NAMES:
+            if name in LOCAL_FILE_TOOL_NAMES:
                 return True
         name = getattr(message, "name", None)
-        if name in LOCAL_TOOL_NAMES:
+        if name in LOCAL_FILE_TOOL_NAMES:
             return True
     return False
