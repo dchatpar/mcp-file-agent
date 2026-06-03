@@ -1,0 +1,9 @@
+services:
+  file-search-agent:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - ${SEARCH_ROOT:-./data/samples/zoology}:/app/data/samples/zoology:ro
+    stdin_open: true
+    tty: true

@@ -1,0 +1,23 @@
+# Example systemd unit — copy to /etc/systemd/system/file-search-agent.service
+# and adjust paths, user, and EnvironmentFile before enabling.
+
+[Unit]
+Description=Local File Search MCP Agent CLI
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=filesearch
+Group=filesearch
+WorkingDirectory=/opt/file-search-agent
+EnvironmentFile=/opt/file-search-agent/.env
+ExecStart=/opt/file-search-agent/.venv/bin/file-search-agent
+Restart=on-failure
+RestartSec=10
+
+# Interactive REPL requires a TTY; for headless validation use batch scripts instead:
+# ExecStart=/opt/file-search-agent/.venv/bin/python -u /opt/file-search-agent/scripts/e2e_verify.py
+
+[Install]
+WantedBy=multi-user.target

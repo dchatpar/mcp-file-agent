@@ -20,6 +20,11 @@ from file_search_agent.config import (
 from file_search_agent.mcp.local_file_search import create_server
 
 
+def _is_minimax_provider(base_url: str = OPENAI_BASE_URL) -> bool:
+    """Return True when the configured base URL targets MiniMax."""
+    return "minimax" in base_url.lower()
+
+
 def load_skill_prompt(skill_path: Path = SKILL_PATH) -> str:
     if not skill_path.exists():
         return "You are a file search and Microsoft documentation assistant."
@@ -51,18 +56,20 @@ def _create_chat_model() -> ChatOpenAI:
         raise ValueError(
             "OPENAI_API_KEY is required. Set it in .env (see .env.example)."
         )
-    return ChatOpenAI(
-        model=OPENAI_MODEL,
-        api_key=OPENAI_API_KEY,
-        base_url=OPENAI_BASE_URL,
-        temperature=0,
-        timeout=120,
-        max_retries=2,
-        extra_body={
+    kwargs: dict = {
+        "model": OPENAI_MODEL,
+        "api_key": OPENAI_API_KEY,
+        "base_url": OPENAI_BASE_URL,
+        "temperature": 0,
+        "timeout": 120,
+        "max_retries": 2,
+    }
+    if _is_minimax_provider(OPENAI_BASE_URL):
+        kwargs["extra_body"] = {
             "reasoning_split": True,
             "thinking": {"type": "disabled"},
-        },
-    )
+        }
+    return ChatOpenAI(**kwargs)
 
 
 async def create_file_search_agent():

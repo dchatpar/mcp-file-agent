@@ -15,8 +15,17 @@ from dotenv import load_dotenv
 
 load_dotenv(ROOT / ".env")
 
-from file_search_agent.agent_factory import close_agent, create_file_search_agent
-from file_search_agent.config import MS_ANSWER_MAX_CHARS, OPENAI_API_KEY
+from file_search_agent.agent_factory import (
+    _is_minimax_provider,
+    close_agent,
+    create_file_search_agent,
+)
+from file_search_agent.config import (
+    MS_ANSWER_MAX_CHARS,
+    OPENAI_API_KEY,
+    OPENAI_BASE_URL,
+    OPENAI_MODEL,
+)
 from file_search_agent.output_guard import guard_agent_output, message_used_local_tools
 from file_search_agent.routing import OUT_OF_SCOPE_ERROR
 
@@ -74,7 +83,11 @@ def _assert_json(text: str, label: str) -> dict:
 async def run_checks() -> list[str]:
     failures: list[str] = []
 
-    _log("Creating agent (local MCP + Learn MCP + MiniMax)...")
+    provider = "MiniMax" if _is_minimax_provider(OPENAI_BASE_URL) else "OpenAI-compatible"
+    _log(
+        f"Creating agent (local MCP + Learn MCP + {provider}, "
+        f"model={OPENAI_MODEL})..."
+    )
     agent = await asyncio.wait_for(create_file_search_agent(), timeout=CREATE_TIMEOUT_S)
     _log("Agent ready.")
 

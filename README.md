@@ -10,6 +10,18 @@ LangChain CLI agent that combines an in-process **Local File Search** MCP (FastM
 - SKILL-based routing with JSON-only local results and 2000-char MS answers
 - Async REPL CLI
 
+## Documentation
+
+| Guide | Description |
+|-------|-------------|
+| [docs/README.md](docs/README.md) | Documentation index |
+| [docs/PROJECT_OVERVIEW.md](docs/PROJECT_OVERVIEW.md) | Architecture and what was built |
+| [docs/LLM_PROVIDER_GUIDE.md](docs/LLM_PROVIDER_GUIDE.md) | MiniMax ↔ OpenAI migration |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Deploy: local, GitHub, Docker, systemd |
+| [docs/OPERATIONS.md](docs/OPERATIONS.md) | Operations and CI |
+| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common issues |
+| [docs/COMPLIANCE_REPORT.md](docs/COMPLIANCE_REPORT.md) | Assignment audit |
+
 ## Setup
 
 ```bash
@@ -31,9 +43,9 @@ OPENAI_BASE_URL=https://api.minimax.io/v1
 OPENAI_MODEL=MiniMax-M2.7
 ```
 
-LangChain uses `ChatOpenAI` with `base_url` pointing at MiniMax. `OPENAI_API_BASE_URL` is accepted as an alias for `OPENAI_BASE_URL`.
+LangChain uses `ChatOpenAI` with `base_url` pointing at MiniMax. MiniMax-only `extra_body` (thinking disabled) is applied automatically when the base URL contains `minimax`. `OPENAI_API_BASE_URL` is accepted as an alias for `OPENAI_BASE_URL`.
 
-**Assignment / OpenAI GPT-5.x:** This repo defaults to **MiniMax-M2.7** via the OpenAI-compatible API. To use OpenAI GPT-5.x (or another OpenAI model) instead, set `OPENAI_BASE_URL=https://api.openai.com/v1`, `OPENAI_MODEL` to your GPT model id, and `OPENAI_API_KEY` to your OpenAI key.
+**Assignment / OpenAI GPT-5.x:** Defaults to **MiniMax-M2.7**. For OpenAI, copy `.env.openai.example` to `.env` or set `OPENAI_BASE_URL=https://api.openai.com/v1`, your GPT model id, and an OpenAI API key. Full steps: [docs/LLM_PROVIDER_GUIDE.md](docs/LLM_PROVIDER_GUIDE.md).
 
 ## Environment
 
@@ -86,8 +98,9 @@ Regenerate with: `python scripts/generate_samples.py`
 | Check | Command | API key | Expected |
 |-------|---------|---------|----------|
 | Lint | `ruff check src tests scripts` | No | All checks passed |
-| Unit tests | `pytest -v` | No | 32 passed |
+| Unit tests | `pytest -v` | No | 40 passed |
 | E2E agent | `python -u scripts/e2e_verify.py` | Yes | 5/5 PASSED (~1–2 min) |
+| Production gate | `python -u scripts/production_gate.py` | Yes | All 6 steps PASS (~90s) |
 | Sample data | `python scripts/generate_samples.py` | No | 8 files in `data/samples/zoology/` |
 
 Run lint and unit tests in parallel:
@@ -132,7 +145,7 @@ file-search-agent
 | `read_pdf_content` | read single PDF by path | `test_read_pdf_content_*` |
 | Microsoft Learn MCP (remote) | `streamable_http` at learn.microsoft.com | `test_learn_mcp.py`, E2E [4] |
 | SKILL routing (local JSON / MS prose / out-of-scope) | `SKILL.md`, `routing.py`, `output_guard.py` | `test_agent_routing.py`, E2E [5] |
-| MiniMax via OpenAI-compatible API | `ChatOpenAI` + `extra_body` (thinking disabled) | `agent_factory.py`, E2E all |
+| MiniMax via OpenAI-compatible API | `ChatOpenAI` + conditional `extra_body` | `agent_factory.py`, `test_agent_factory.py`, E2E all |
 | Sandboxed `SEARCH_ROOT` | path traversal rejected | `test_security.py` |
 | 8 sample zoology files | `data/samples/zoology/` | `generate_samples.py`, E2E [2] |
 
@@ -169,6 +182,10 @@ src/file_search_agent/
   output_guard.py      # JSON / truncation guards
   mcp/local_file_search.py
 data/samples/zoology/  # Non-tech zoology sample files
+docs/                  # Full deployment and LLM guides
+deploy/                # systemd unit example
+Dockerfile             # Container image
+docker-compose.yml
 tests/
 ```
 
