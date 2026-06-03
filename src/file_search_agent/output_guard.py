@@ -81,8 +81,50 @@ def truncate_ms_answer(text: str, max_chars: int | None = None) -> str:
     return cleaned[: limit - 3].rstrip() + "..."
 
 
-def guard_agent_output(text: str, *, used_local_tools: bool) -> str:
+def _tool_message_text(content: Any) -> str:
+    if content is None:
+        return ""
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        parts: list[str] = []
+        for block in content:
+            if isinstance(block, str):
+                parts.append(block)
+            elif isinstance(block, dict) and block.get("type") == "text":
+                parts.append(str(block.get("text", "")))
+            else:
+                text = getattr(block, "text", None)
+                if text:
+                    parts.append(str(text))
+        return "".join(parts)
+    return str(content)
+
+
+def last_local_tool_json(messages: list[Any]) -> str | None:
+    """Prefer the last local MCP tool payload when the model wraps JSON in prose."""
+    for message in reversed(messages):
+        name = getattr(message, "name", None)
+        if name not in LOCAL_FILE_TOOL_NAMES:
+            continue
+        text = _tool_message_text(getattr(message, "content", None))
+        payload = extract_json_payload(text)
+        if payload is not None:
+            return payload
+    return None
+
+
+def guard_agent_output(
+    text: str,
+    *,
+    used_local_tools: bool,
+    messages: list[Any] | None = None,
+) -> str:
     if used_local_tools:
+        if messages:
+            tool_json = last_local_tool_json(messages)
+            if tool_json is not None:
+                return enforce_json_only(tool_json)
         return enforce_json_only(text)
     return truncate_ms_answer(text)
 

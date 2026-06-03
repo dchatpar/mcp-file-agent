@@ -39,6 +39,7 @@ select = ["E", "F", "I", "W"]
 
 [tool.ruff.lint.per-file-ignores]
 "scripts/e2e_verify.py" = ["E402"]
+"scripts/spotcheck_assignment.py" = ["E402"]
 
 [project.scripts]
 file-search-agent = "file_search_agent.main:main"

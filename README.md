@@ -33,6 +33,8 @@ OPENAI_MODEL=MiniMax-M2.7
 
 LangChain uses `ChatOpenAI` with `base_url` pointing at MiniMax. `OPENAI_API_BASE_URL` is accepted as an alias for `OPENAI_BASE_URL`.
 
+**Assignment / OpenAI GPT-5.x:** This repo defaults to **MiniMax-M2.7** via the OpenAI-compatible API. To use OpenAI GPT-5.x (or another OpenAI model) instead, set `OPENAI_BASE_URL=https://api.openai.com/v1`, `OPENAI_MODEL` to your GPT model id, and `OPENAI_API_KEY` to your OpenAI key.
+
 ## Environment
 
 | Variable | Default | Description |

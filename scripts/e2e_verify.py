@@ -58,7 +58,9 @@ async def _ask(agent, query: str) -> tuple[str, bool]:
         return "", False
     raw = _extract_text(getattr(messages[-1], "content", ""))
     used_local = message_used_local_tools(messages)
-    guarded = guard_agent_output(raw, used_local_tools=used_local)
+    guarded = guard_agent_output(
+        raw, used_local_tools=used_local, messages=messages
+    )
     return guarded, used_local
 
 

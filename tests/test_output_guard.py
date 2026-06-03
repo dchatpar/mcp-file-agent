@@ -8,6 +8,7 @@ from file_search_agent.output_guard import (
     enforce_json_only,
     extract_json_payload,
     guard_agent_output,
+    last_local_tool_json,
     truncate_ms_answer,
 )
 
@@ -43,6 +44,31 @@ def test_guard_agent_output_learn_truncation():
     raw = "x" * 3000
     out = guard_agent_output(raw, used_local_tools=False)
     assert len(out) <= 2000
+
+
+def test_guard_prefers_last_local_tool_json_over_prose():
+    tool_payload = '{"matches":[],"total":8,"query":{}}'
+
+    class ToolMessage:
+        name = "list_all_files"
+        content = tool_payload
+
+    class AiMessage:
+        name = None
+        content = "Here are your files: not quite json"
+        tool_calls = []
+
+    messages = [ToolMessage(), AiMessage()]
+    out = guard_agent_output(
+        "Summary: 8 files found.",
+        used_local_tools=True,
+        messages=messages,
+    )
+    assert json.loads(out)["total"] == 8
+
+
+def test_last_local_tool_json_returns_none_without_tools():
+    assert last_local_tool_json([]) is None
 
 
 def test_extract_json_payload_array():

@@ -57,7 +57,9 @@ async def run_repl() -> None:
             last = messages[-1]
             raw = _extract_text(getattr(last, "content", ""))
             used_local = message_used_local_tools(messages)
-            guarded = guard_agent_output(raw, used_local_tools=used_local)
+            guarded = guard_agent_output(
+                raw, used_local_tools=used_local, messages=messages
+            )
             print(f"agent> {guarded}\n")
     finally:
         await close_agent(agent)

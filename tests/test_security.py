@@ -3,12 +3,19 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 from pathlib import Path
 
 import pytest
 
 from file_search_agent.mcp.local_file_search import read_pdf_content_impl, search_files_impl
+
+# Match live key material (prefix + 20+ chars), not bare prefix in source
+_KEY_PREFIX = "sk" + "-cp-"
+_LIVE_KEY_PATTERN = re.compile(
+    re.escape(_KEY_PREFIX) + r"[A-Za-z0-9_-]{20,}"
+)
 
 
 def test_no_live_api_keys_in_tracked_files():
@@ -30,7 +37,8 @@ def test_no_live_api_keys_in_tracked_files():
         if not path.is_file():
             continue
         content = path.read_text(encoding="utf-8", errors="ignore")
-        assert "sk-cp-" not in content, f"possible API key in tracked file: {rel_path}"
+        if _LIVE_KEY_PATTERN.search(content):
+            pytest.fail(f"possible API key in tracked file: {rel_path}")
 
 
 def test_read_pdf_outside_sandbox_rejected():
