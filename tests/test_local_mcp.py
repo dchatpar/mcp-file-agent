@@ -81,7 +81,7 @@ def test_search_all_files_returns_eight():
 
 
 def test_search_files_by_extension_non_pdf():
-    for ext, count in ((".docx", 1), (".xlsx", 1), (".txt", 1), (".jpg", 1)):
+    for ext, count in ((".docx", 1), (".xls", 1), (".txt", 1), (".jpg", 1)):
         result = search_files_impl(extension=ext)
         assert result.total == count, f"expected {count} {ext} file(s), got {result.total}"
 

@@ -21,16 +21,30 @@ LangChain CLI agent that combines an in-process **Local File Search** MCP (FastM
 | [docs/OPERATIONS.md](docs/OPERATIONS.md) | Operations and CI |
 | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common issues |
 | [docs/COMPLIANCE_REPORT.md](docs/COMPLIANCE_REPORT.md) | Assignment audit |
+| [docs/INSTRUCTIONS_FOR_ABIN.md](docs/INSTRUCTIONS_FOR_ABIN.md) | Reviewer guide for `install.py` |
 
 ## Setup
 
+**One command (recommended):**
+
 ```bash
-cd /home/dchat/test
+git clone https://github.com/dchatpar/mcp-file-agent.git
+cd mcp-file-agent
+chmod +x install.py
+./install.py --non-interactive --skip-e2e   # no API key; full gate without E2E
+# Or interactive: ./install.py
+```
+
+**Manual setup:**
+
+```bash
+cd mcp-file-agent
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
 cp .env.example .env
 # Set OPENAI_API_KEY in .env (never commit .env)
+python scripts/generate_samples.py
 ```
 
 ## MiniMax (OpenAI-compatible)
@@ -85,7 +99,7 @@ The [`data/samples/zoology/`](data/samples/zoology) directory holds 8 non-techni
 | `bird_migration_analysis.pdf` | .pdf | Arctic tern geolocator study |
 | `amphibian_survey_2023.pdf` | .pdf | Chytrid fungus impact assessment |
 | `coral_reef_observations.docx` | .docx | Great Barrier Reef transect notes |
-| `species_count_2024.xlsx` | .xlsx | Endangered species population counts |
+| `species_count_2024.xls` | .xls | Endangered species population counts |
 | `field_notes_borneo.txt` | .txt | Borneo rainforest expedition diary |
 | `jaguar_photo_rainforest.jpg` | .jpg | Camera-trap image placeholder |
 
@@ -97,7 +111,7 @@ Regenerate with: `python scripts/generate_samples.py`
 
 | Check | Command | API key | Expected |
 |-------|---------|---------|----------|
-| Lint | `ruff check src tests scripts` | No | All checks passed |
+| Lint | `ruff check src tests scripts install.py` | No | All checks passed |
 | Unit tests | `pytest -v` | No | 40 passed |
 | E2E agent | `python -u scripts/e2e_verify.py` | Yes | 5/5 PASSED (~1–2 min) |
 | Production gate | `python -u scripts/production_gate.py` | Yes | All 6 steps PASS (~90s) |
@@ -162,14 +176,9 @@ Or install from project metadata only: `pip install -e ".[dev]"`.
 
 ## GitHub
 
-The repo is initialized locally. To publish:
+**Published repository:** https://github.com/dchatpar/mcp-file-agent
 
-```bash
-git remote add origin https://github.com/YOUR_USERNAME/mcp-file-agent.git
-git push -u origin main
-```
-
-To share with the reviewer: GitHub → Settings → Collaborators → add **`abin-aot`**.
+Reviewer **`abin-aot`** has been invited as a collaborator. Submission email draft for the AOT assessment: [docs/SUBMISSION_EMAIL_TO_ABIN.md](docs/SUBMISSION_EMAIL_TO_ABIN.md).
 
 ## Project layout
 

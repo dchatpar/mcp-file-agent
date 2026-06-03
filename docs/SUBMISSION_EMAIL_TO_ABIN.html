@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AOT AI Architect Assessment ù Submission</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f6f8;font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;color:#1a1a1a;">
+
+<!-- Copy everything inside this table into Gmail/Outlook (Select All in browser, then paste) -->
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f4f6f8;">
+  <tr>
+    <td align="center" style="padding:24px 12px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="680" style="max-width:680px;background-color:#ffffff;border:1px solid #dde3ea;border-radius:8px;">
+
+        <!-- Header -->
+        <tr>
+          <td style="padding:28px 32px 20px 32px;border-bottom:3px solid #0066b3;">
+            <p style="margin:0 0 6px 0;font-size:13px;color:#5c6b7a;text-transform:uppercase;letter-spacing:0.5px;">AOT AI Architect Assessment</p>
+            <h1 style="margin:0;font-size:22px;font-weight:600;color:#003d6b;line-height:1.3;">Part 1: Local File Search MCP Agent ù Submission</h1>
+          </td>
+        </tr>
+
+        <!-- Greeting -->
+        <tr>
+          <td style="padding:24px 32px 8px 32px;">
+            <p style="margin:0 0 14px 0;">Hi Abin,</p>
+            <p style="margin:0 0 14px 0;">Thank you for sharing the assessment materials and for your note on the timeline. Please find below my submission for <strong>Part 1 (AI Agent Development)</strong>, including repository access, technical architecture, verification results, and reviewer instructions.</p>
+          </td>
+        </tr>
+
+        <!-- Repository box -->
+        <tr>
+          <td style="padding:8px 32px 24px 32px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#eef6fc;border-left:4px solid #0066b3;border-radius:4px;">
+              <tr>
+                <td style="padding:18px 20px;">
+                  <p style="margin:0 0 10px 0;font-size:14px;font-weight:600;color:#003d6b;">GitHub repository (public)</p>
+                  <p style="margin:0 0 12px 0;"><a href="https://github.com/dchatpar/mcp-file-agent" style="color:#0066b3;font-weight:600;">https://github.com/dchatpar/mcp-file-agent</a></p>
+                  <p style="margin:0 0 8px 0;font-size:14px;">Collaborator invitation sent to GitHub user <strong>abin-aot</strong> (write access). Pending invites:</p>
+                  <p style="margin:0 0 12px 0;"><a href="https://github.com/dchatpar/mcp-file-agent/invitations" style="color:#0066b3;">https://github.com/dchatpar/mcp-file-agent/invitations</a></p>
+                  <p style="margin:0;font-size:13px;color:#444;"><strong>Branch:</strong> master &nbsp;|&nbsp; <strong>Latest commit:</strong> <code style="background:#fff;padding:2px 6px;border-radius:3px;font-size:12px;">167e334</code> ù production docs, deployment artifacts, unified verification gate, compliance sign-off</p>
+                  <p style="margin:14px 0 0 0;font-size:14px;"><strong>Quick setup:</strong> <code style="background:#fff;padding:2px 6px;border-radius:3px;font-size:12px;">chmod +x install.py &amp;&amp; ./install.py --non-interactive --skip-e2e --yes</code></p>
+                  <p style="margin:6px 0 0 0;font-size:13px;color:#444;">Full walkthrough: <a href="https://github.com/dchatpar/mcp-file-agent/blob/master/docs/INSTRUCTIONS_FOR_ABIN.md" style="color:#0066b3;">docs/INSTRUCTIONS_FOR_ABIN.md</a></p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Section 1 -->
+        <tr>
+          <td style="padding:8px 32px 12px 32px;">
+            <h2 style="margin:0 0 12px 0;font-size:17px;color:#003d6b;border-bottom:1px solid #e8ecf0;padding-bottom:8px;">1. Assignment objective</h2>
+            <p style="margin:0 0 12px 0;">I implemented a <strong>LangChain code-first CLI agent</strong> aligned with the scenario in your Instructions.pdf:</p>
+            <ul style="margin:0 0 14px 0;padding-left:22px;">
+              <li style="margin-bottom:8px;"><strong>In-process Local File Search MCP</strong> (FastMCP) ù sandboxed metadata search, PDF listing, PDF full-text search, and single-PDF read.</li>
+              <li style="margin-bottom:8px;"><strong>Remote Microsoft Learn MCP</strong> at <a href="https://learn.microsoft.com/api/mcp" style="color:#0066b3;">https://learn.microsoft.com/api/mcp</a> using <code style="background:#f0f2f5;padding:2px 5px;font-size:13px;">streamable_http</code> (native tools e.g. <code style="background:#f0f2f5;padding:2px 5px;font-size:13px;">microsoft_docs_search</code>).</li>
+              <li style="margin-bottom:8px;"><strong>SKILL-based routing</strong> (<a href="https://github.com/dchatpar/mcp-file-agent/blob/master/SKILL.md" style="color:#0066b3;">SKILL.md</a>) with strict response contracts:
+                <ul style="margin-top:6px;padding-left:18px;">
+                  <li><strong>Local file queries</strong> ? JSON only (no markdown or prose).</li>
+                  <li><strong>Microsoft / Azure documentation</strong> ? Learn MCP only; answer capped at <strong>2,000 characters</strong>.</li>
+                  <li><strong>Out-of-scope queries</strong> ? fixed JSON error; no tools invoked.</li>
+                </ul>
+              </li>
+              <li><strong>Interface:</strong> async REPL CLI (<code style="background:#f0f2f5;padding:2px 5px;font-size:13px;">file-search-agent</code>) ù meets the CLI-acceptable requirement (no web UI).</li>
+            </ul>
+            <p style="margin:0;padding:12px 14px;background:#f8f9fa;border:1px solid #e8ecf0;border-radius:4px;font-family:Consolas,Monaco,monospace;font-size:13px;">{"error": "Query out of scope. Only file search and Microsoft/Azure queries are supported."}</p>
+          </td>
+        </tr>
+
+        <!-- Section 2 -->
+        <tr>
+          <td style="padding:16px 32px 12px 32px;">
+            <h2 style="margin:0 0 12px 0;font-size:17px;color:#003d6b;border-bottom:1px solid #e8ecf0;padding-bottom:8px;">2. Architecture</h2>
+            <p style="margin:0 0 14px 0;"><strong>Request flow:</strong> User query in REPL ? LangChain <code style="background:#f0f2f5;padding:2px 5px;font-size:13px;">create_agent</code> selects tools per SKILL.md ? local in-process MCP or remote Learn MCP executes ? <code style="background:#f0f2f5;padding:2px 5px;font-size:13px;">output_guard.py</code> enforces JSON-only local responses, prefers last tool JSON when the model adds prose, truncates Microsoft answers, strips reasoning artifacts ? guarded output printed to terminal.</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;font-size:14px;">
+              <tr style="background-color:#003d6b;color:#ffffff;">
+                <th align="left" style="padding:10px 12px;border:1px solid #003d6b;">Component</th>
+                <th align="left" style="padding:10px 12px;border:1px solid #003d6b;">Path</th>
+                <th align="left" style="padding:10px 12px;border:1px solid #003d6b;">Role</th>
+              </tr>
+              <tr>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;">CLI entry</td>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;font-family:Consolas,monospace;font-size:12px;">src/file_search_agent/main.py</td>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;">REPL loop, output guard</td>
+              </tr>
+              <tr style="background-color:#f8f9fa;">
+                <td style="padding:9px 12px;border:1px solid #dde3ea;">Agent factory</td>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;font-family:Consolas,monospace;font-size:12px;">agent_factory.py</td>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;">create_agent, MCP clients, ChatOpenAI</td>
+              </tr>
+              <tr>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;">Local MCP</td>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;font-family:Consolas,monospace;font-size:12px;">mcp/local_file_search.py</td>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;">FastMCP tools, sandbox</td>
+              </tr>
+              <tr style="background-color:#f8f9fa;">
+                <td style="padding:9px 12px;border:1px solid #dde3ea;">Models</td>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;font-family:Consolas,monospace;font-size:12px;">models.py</td>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;">Pydantic + assignment JSON aliases</td>
+              </tr>
+              <tr>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;">Routing / guard</td>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;font-family:Consolas,monospace;font-size:12px;">routing.py, output_guard.py</td>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;">Out-of-scope constant, JSON enforcement</td>
+              </tr>
+              <tr style="background-color:#f8f9fa;">
+                <td style="padding:9px 12px;border:1px solid #dde3ea;">Config</td>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;font-family:Consolas,monospace;font-size:12px;">config.py</td>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;">SEARCH_ROOT, API, Learn URL, limits</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Section 3 -->
+        <tr>
+          <td style="padding:16px 32px 12px 32px;">
+            <h2 style="margin:0 0 12px 0;font-size:17px;color:#003d6b;border-bottom:1px solid #e8ecf0;padding-bottom:8px;">3. Local MCP tools</h2>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;font-size:14px;">
+              <tr style="background-color:#003d6b;color:#ffffff;">
+                <th align="left" style="padding:10px 12px;border:1px solid #003d6b;">Tool</th>
+                <th align="left" style="padding:10px 12px;border:1px solid #003d6b;">Capability</th>
+              </tr>
+              <tr>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;font-family:Consolas,monospace;font-size:12px;">search_files</td>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;">Filter by name, folder, extension, created/modified dates, file size</td>
+              </tr>
+              <tr style="background-color:#f8f9fa;">
+                <td style="padding:9px 12px;border:1px solid #dde3ea;font-family:Consolas,monospace;font-size:12px;">search_pdf_content</td>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;">Full-text keyword search in PDFs (pypdf)</td>
+              </tr>
+              <tr>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;font-family:Consolas,monospace;font-size:12px;">list_all_files</td>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;">List all files under sandboxed root</td>
+              </tr>
+              <tr style="background-color:#f8f9fa;">
+                <td style="padding:9px 12px;border:1px solid #dde3ea;font-family:Consolas,monospace;font-size:12px;">read_pdf_content</td>
+                <td style="padding:9px 12px;border:1px solid #dde3ea;">Read text from one PDF by relative path</td>
+              </tr>
+            </table>
+            <p style="margin:14px 0 0 0;font-size:14px;">All paths resolve under <code style="background:#f0f2f5;padding:2px 5px;">SEARCH_ROOT</code> (default: <code style="background:#f0f2f5;padding:2px 5px;">data/samples/zoology/</code>). Path traversal outside the sandbox is rejected (security tests).</p>
+          </td>
+        </tr>
+
+        <!-- Section 4 -->
+        <tr>
+          <td style="padding:16px 32px 12px 32px;">
+            <h2 style="margin:0 0 12px 0;font-size:17px;color:#003d6b;border-bottom:1px solid #e8ecf0;padding-bottom:8px;">4. Sample data (zoology theme)</h2>
+            <p style="margin:0 0 10px 0;">Eight non-technical files, <strong>five extensions</strong>, generated by <code style="background:#f0f2f5;padding:2px 5px;">scripts/generate_samples.py</code>:</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;font-size:14px;">
+              <tr style="background-color:#f0f2f5;">
+                <th align="left" style="padding:8px 12px;border:1px solid #dde3ea;">File</th>
+                <th align="left" style="padding:8px 12px;border:1px solid #dde3ea;">Type</th>
+              </tr>
+              <tr><td style="padding:7px 12px;border:1px solid #dde3ea;">african_elephant_study.pdf</td><td style="padding:7px 12px;border:1px solid #dde3ea;">PDF</td></tr>
+              <tr><td style="padding:7px 12px;border:1px solid #dde3ea;">marine_mammals_report.pdf</td><td style="padding:7px 12px;border:1px solid #dde3ea;">PDF</td></tr>
+              <tr><td style="padding:7px 12px;border:1px solid #dde3ea;">bird_migration_analysis.pdf</td><td style="padding:7px 12px;border:1px solid #dde3ea;">PDF</td></tr>
+              <tr><td style="padding:7px 12px;border:1px solid #dde3ea;">amphibian_survey_2023.pdf</td><td style="padding:7px 12px;border:1px solid #dde3ea;">PDF</td></tr>
+              <tr><td style="padding:7px 12px;border:1px solid #dde3ea;">coral_reef_observations.docx</td><td style="padding:7px 12px;border:1px solid #dde3ea;">DOCX</td></tr>
+              <tr><td style="padding:7px 12px;border:1px solid #dde3ea;">species_count_2024.xls</td><td style="padding:7px 12px;border:1px solid #dde3ea;">XLS</td></tr>
+              <tr><td style="padding:7px 12px;border:1px solid #dde3ea;">field_notes_borneo.txt</td><td style="padding:7px 12px;border:1px solid #dde3ea;">TXT</td></tr>
+              <tr><td style="padding:7px 12px;border:1px solid #dde3ea;">jaguar_photo_rainforest.jpg</td><td style="padding:7px 12px;border:1px solid #dde3ea;">JPG</td></tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Section 5 -->
+        <tr>
+          <td style="padding:16px 32px 12px 32px;">
+            <h2 style="margin:0 0 12px 0;font-size:17px;color:#003d6b;border-bottom:1px solid #e8ecf0;padding-bottom:8px;">5. LLM configuration</h2>
+            <p style="margin:0 0 10px 0;">LangChain <strong>ChatOpenAI</strong> against an OpenAI-compatible HTTP API.</p>
+            <p style="margin:0 0 8px 0;"><strong>Default (E2E verified):</strong> MiniMax M2.7</p>
+            <ul style="margin:0 0 12px 0;padding-left:22px;font-size:14px;">
+              <li><code style="background:#f0f2f5;padding:2px 5px;">OPENAI_BASE_URL=https://api.minimax.io/v1</code></li>
+              <li><code style="background:#f0f2f5;padding:2px 5px;">OPENAI_MODEL=MiniMax-M2.7</code></li>
+              <li>MiniMax-only <code style="background:#f0f2f5;padding:2px 5px;">extra_body</code> (thinking disabled) when base URL indicates MiniMax ù OpenAI swap documented without code changes.</li>
+            </ul>
+            <p style="margin:0 0 8px 0;"><strong>OpenAI / GPT-5.x option:</strong> Copy <code style="background:#f0f2f5;padding:2px 5px;">.env.openai.example</code> ? <code style="background:#f0f2f5;padding:2px 5px;">.env</code>; set OpenAI key and model id. See <code style="background:#f0f2f5;padding:2px 5px;">docs/LLM_PROVIDER_GUIDE.md</code>.</p>
+            <p style="margin:0;font-size:14px;color:#5c4033;"><strong>Security:</strong> API keys only in <code style="background:#f0f2f5;padding:2px 5px;">.env</code> (gitignored; never committed).</p>
+          </td>
+        </tr>
+
+        <!-- Section 6 -->
+        <tr>
+          <td style="padding:16px 32px 12px 32px;">
+            <h2 style="margin:0 0 12px 0;font-size:17px;color:#003d6b;border-bottom:1px solid #e8ecf0;padding-bottom:8px;">6. Verified assignment queries</h2>
+            <p style="margin:0 0 10px 0;font-weight:600;">E2E ù scripts/e2e_verify.py (5 checks)</p>
+            <ol style="margin:0 0 16px 0;padding-left:22px;font-size:14px;">
+              <li style="margin-bottom:6px;">&ldquo;What PDF files are available in our system?&rdquo; ? local tools, JSON with PDFs ù <span style="color:#0d7d4d;font-weight:600;">PASS</span></li>
+              <li style="margin-bottom:6px;">&ldquo;List all files in the system&rdquo; ? local tools, 8 files ù <span style="color:#0d7d4d;font-weight:600;">PASS</span></li>
+              <li style="margin-bottom:6px;">&ldquo;Find files about elephants&rdquo; ? local tools, elephant in JSON ù <span style="color:#0d7d4d;font-weight:600;">PASS</span></li>
+              <li style="margin-bottom:6px;">&ldquo;What is Azure Blob Storage?&rdquo; ? Learn MCP only, ?2000 chars ù <span style="color:#0d7d4d;font-weight:600;">PASS</span></li>
+              <li style="margin-bottom:6px;">&ldquo;What is the capital of France?&rdquo; ? out-of-scope JSON, no tools ù <span style="color:#0d7d4d;font-weight:600;">PASS</span></li>
+            </ol>
+            <p style="margin:0 0 8px 0;"><strong>Spot-check</strong> (scripts/spotcheck_assignment.py): <span style="color:#0d7d4d;font-weight:600;">3/3 PASS</span></p>
+            <p style="margin:0;"><strong>Production gate</strong> (scripts/production_gate.py): samples ? ruff ? pytest (40) ? security (4) ? E2E ? spot-check ù <span style="color:#0d7d4d;font-weight:600;">PASS</span> (~88s with API key)</p>
+          </td>
+        </tr>
+
+        <!-- Section 7 QA -->
+        <tr>
+          <td style="padding:16px 32px 12px 32px;">
+            <h2 style="margin:0 0 12px 0;font-size:17px;color:#003d6b;border-bottom:1px solid #e8ecf0;padding-bottom:8px;">7. Quality assurance</h2>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;font-size:14px;">
+              <tr style="background-color:#003d6b;color:#ffffff;">
+                <th align="left" style="padding:10px 12px;border:1px solid #003d6b;">Gate</th>
+                <th align="left" style="padding:10px 12px;border:1px solid #003d6b;">Result</th>
+              </tr>
+              <tr><td style="padding:9px 12px;border:1px solid #dde3ea;">ruff check src tests scripts</td><td style="padding:9px 12px;border:1px solid #dde3ea;color:#0d7d4d;font-weight:600;">PASS</td></tr>
+              <tr style="background-color:#f8f9fa;"><td style="padding:9px 12px;border:1px solid #dde3ea;">pytest</td><td style="padding:9px 12px;border:1px solid #dde3ea;color:#0d7d4d;font-weight:600;">40/40 PASS</td></tr>
+              <tr><td style="padding:9px 12px;border:1px solid #dde3ea;">test_security.py</td><td style="padding:9px 12px;border:1px solid #dde3ea;color:#0d7d4d;font-weight:600;">4/4 PASS</td></tr>
+              <tr style="background-color:#f8f9fa;"><td style="padding:9px 12px;border:1px solid #dde3ea;">E2E agent</td><td style="padding:9px 12px;border:1px solid #dde3ea;color:#0d7d4d;font-weight:600;">5/5 PASS</td></tr>
+              <tr><td style="padding:9px 12px;border:1px solid #dde3ea;">Spot-check</td><td style="padding:9px 12px;border:1px solid #dde3ea;color:#0d7d4d;font-weight:600;">3/3 PASS</td></tr>
+              <tr style="background-color:#f8f9fa;"><td style="padding:9px 12px;border:1px solid #dde3ea;">.env in repository</td><td style="padding:9px 12px;border:1px solid #dde3ea;">Not tracked (by design)</td></tr>
+            </table>
+            <p style="margin:12px 0 0 0;font-size:14px;">Full matrix: <code style="background:#f0f2f5;padding:2px 5px;">docs/COMPLIANCE_REPORT.md</code></p>
+          </td>
+        </tr>
+
+        <!-- Section 8 docs -->
+        <tr>
+          <td style="padding:16px 32px 12px 32px;">
+            <h2 style="margin:0 0 12px 0;font-size:17px;color:#003d6b;border-bottom:1px solid #e8ecf0;padding-bottom:8px;">8. In-repo documentation</h2>
+            <ul style="margin:0;padding-left:22px;font-size:14px;">
+              <li>README.md ù quick start, QA matrix</li>
+              <li>docs/PROJECT_OVERVIEW.md ù architecture, compliance</li>
+              <li>docs/LLM_PROVIDER_GUIDE.md ù MiniMax / OpenAI migration</li>
+              <li>docs/DEPLOYMENT.md ù local, Docker, systemd, GitHub</li>
+              <li>docs/OPERATIONS.md ù operations, CI sample</li>
+              <li>docs/TROUBLESHOOTING.md ù common issues</li>
+              <li>docs/COMPLIANCE_REPORT.md ù audit + production sign-off</li>
+              <li><strong><a href="https://github.com/dchatpar/mcp-file-agent/blob/master/docs/INSTRUCTIONS_FOR_ABIN.md" style="color:#0066b3;">docs/INSTRUCTIONS_FOR_ABIN.md</a></strong> ù install.py step-by-step (start here)</li>
+            </ul>
+          </td>
+        </tr>
+
+        <!-- Section 9 run -->
+        <tr>
+          <td style="padding:16px 32px 12px 32px;">
+            <h2 style="margin:0 0 12px 0;font-size:17px;color:#003d6b;border-bottom:1px solid #e8ecf0;padding-bottom:8px;">9. How to run (reviewer)</h2>
+            <p style="margin:0 0 10px 0;font-size:14px;"><strong>Recommended</strong> ó one-command installer (see <a href="https://github.com/dchatpar/mcp-file-agent/blob/master/docs/INSTRUCTIONS_FOR_ABIN.md" style="color:#0066b3;">INSTRUCTIONS_FOR_ABIN.md</a>):</p>
+            <pre style="margin:0 0 14px 0;padding:14px 16px;background:#1e2936;color:#e8eef4;border-radius:4px;font-size:12px;line-height:1.45;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word;">git clone https://github.com/dchatpar/mcp-file-agent.git
+cd mcp-file-agent
+chmod +x install.py
+./install.py --non-interactive --skip-e2e --yes
+file-search-agent</pre>
+            <p style="margin:0 0 10px 0;font-size:14px;"><strong>Manual setup</strong> (equivalent):</p>
+            <pre style="margin:0;padding:14px 16px;background:#1e2936;color:#e8eef4;border-radius:4px;font-size:12px;line-height:1.45;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word;">git clone https://github.com/dchatpar/mcp-file-agent.git
+cd mcp-file-agent
+python3 -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -e ".[dev]"
+cp .env.example .env
+# Set OPENAI_API_KEY in .env (never commit)
+python scripts/generate_samples.py
+python -u scripts/production_gate.py
+file-search-agent</pre>
+          </td>
+        </tr>
+
+        <!-- Section 10 design -->
+        <tr>
+          <td style="padding:16px 32px 12px 32px;">
+            <h2 style="margin:0 0 12px 0;font-size:17px;color:#003d6b;border-bottom:1px solid #e8ecf0;padding-bottom:8px;">10. Design choices</h2>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;font-size:14px;">
+              <tr style="background-color:#f0f2f5;">
+                <th align="left" style="padding:8px 12px;border:1px solid #dde3ea;">Topic</th>
+                <th align="left" style="padding:8px 12px;border:1px solid #dde3ea;">This submission</th>
+              </tr>
+              <tr><td style="padding:8px 12px;border:1px solid #dde3ea;">Layout</td><td style="padding:8px 12px;border:1px solid #dde3ea;">src/file_search_agent/</td></tr>
+              <tr><td style="padding:8px 12px;border:1px solid #dde3ea;">Agent API</td><td style="padding:8px 12px;border:1px solid #dde3ea;">LangChain create_agent</td></tr>
+              <tr><td style="padding:8px 12px;border:1px solid #dde3ea;">Learn MCP</td><td style="padding:8px 12px;border:1px solid #dde3ea;">streamable_http (official endpoint)</td></tr>
+              <tr><td style="padding:8px 12px;border:1px solid #dde3ea;">Samples</td><td style="padding:8px 12px;border:1px solid #dde3ea;">data/samples/zoology/</td></tr>
+              <tr><td style="padding:8px 12px;border:1px solid #dde3ea;">JSON keys</td><td style="padding:8px 12px;border:1px solid #dde3ea;">Dual: matches/name/total + files/file_name/total_found</td></tr>
+              <tr><td style="padding:8px 12px;border:1px solid #dde3ea;">Default LLM</td><td style="padding:8px 12px;border:1px solid #dde3ea;">MiniMax M2.7; OpenAI path documented</td></tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Section 11 deploy -->
+        <tr>
+          <td style="padding:16px 32px 12px 32px;">
+            <h2 style="margin:0 0 12px 0;font-size:17px;color:#003d6b;border-bottom:1px solid #e8ecf0;padding-bottom:8px;">11. Deployment artifacts (optional)</h2>
+            <p style="margin:0;font-size:14px;">Dockerfile, docker-compose.yml, .dockerignore, and deploy/file-search-agent.service.example (systemd) are included. Container E2E was not run in my submit environment (no Docker CLI); instructions are in docs/DEPLOYMENT.md.</p>
+          </td>
+        </tr>
+
+        <!-- Closing -->
+        <tr>
+          <td style="padding:20px 32px 28px 32px;border-top:1px solid #e8ecf0;">
+            <p style="margin:0 0 14px 0;">I am submitting Part 1 via this email and GitHub <strong>before your deadline of 9:00 AM PST on Thursday, June 4</strong>. Please confirm receipt of the collaborator invite and whether the repository meets your review expectations.</p>
+            <p style="margin:0 0 20px 0;">If you would like a short demo, a branch rename (<code style="background:#f0f2f5;padding:2px 5px;">main</code> vs <code style="background:#f0f2f5;padding:2px 5px;">master</code>), or a walkthrough using OpenAI instead of MiniMax, I am happy to arrange that.</p>
+            <p style="margin:0 0 6px 0;">Thank you again for the opportunity. I look forward to your feedback.</p>
+            <p style="margin:16px 0 0 0;">Best regards,<br><strong>Dhiraj</strong><br><span style="font-size:14px;color:#5c6b7a;">[Your phone and LinkedIn]</span></p>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

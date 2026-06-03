@@ -31,7 +31,7 @@ See [LLM_PROVIDER_GUIDE.md](LLM_PROVIDER_GUIDE.md) for provider-specific key sou
    SEARCH_ROOT=/var/lib/file-search/production-corpus
    ```
 
-2. Populate the directory with allowed files (PDF, docx, xlsx, txt, jpg, etc.).
+2. Populate the directory with allowed files (PDF, docx, xls, txt, jpg, etc.).
 3. Or regenerate sample data for dev/test:
 
    ```bash
@@ -76,7 +76,7 @@ Pin major versions in `pyproject.toml` if a regression appears after upgrade.
 python scripts/generate_samples.py
 ```
 
-Expected output: 8 files in `data/samples/zoology/` covering 5 extensions (.pdf, .docx, .xlsx, .txt, .jpg).
+Expected output: 8 files in `data/samples/zoology/` covering 5 extensions (.pdf, .docx, .xls, .txt, .jpg).
 
 ---
 
@@ -98,7 +98,7 @@ Always use `python -u` for E2E and spot-check so progress lines flush immediatel
 | Context | Logs | Exit code |
 |---------|------|-----------|
 | CLI REPL | stdout (guarded responses) | 0 on clean exit; Ctrl+C |
-| `e2e_verify.py` | `[1/5]` Ö `[5/5]` progress | 0 = all pass; non-zero = failure |
+| `e2e_verify.py` | `[1/5]` ù `[5/5]` progress | 0 = all pass; non-zero = failure |
 | `spotcheck_assignment.py` | PASS/FAIL per query | 0 = 3/3 pass |
 | systemd | `journalctl -u file-search-agent` | Per service config |
 
@@ -106,7 +106,7 @@ Always use `python -u` for E2E and spot-check so progress lines flush immediatel
 
 ## CI suggestion (GitHub Actions)
 
-Document-only sample ó lint + pytest on every push; optional E2E on manual workflow with secret.
+Document-only sample ù lint + pytest on every push; optional E2E on manual workflow with secret.
 
 ```yaml
 name: CI
@@ -152,6 +152,6 @@ Store `OPENAI_API_KEY` (and optional base URL / model) in repository secrets. Do
 
 ## Related
 
-- [DEPLOYMENT.md](DEPLOYMENT.md) ó Initial deploy
-- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) ó Common failures
-- [LLM_PROVIDER_GUIDE.md](LLM_PROVIDER_GUIDE.md) ó Provider migration
+- [DEPLOYMENT.md](DEPLOYMENT.md) ù Initial deploy
+- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) ù Common failures
+- [LLM_PROVIDER_GUIDE.md](LLM_PROVIDER_GUIDE.md) ù Provider migration

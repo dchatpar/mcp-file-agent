@@ -12,7 +12,9 @@ Symptom ? cause ? fix reference consolidated from project development and QA his
 | Invalid JSON from local query | Model wrapped tool JSON in prose | `output_guard` prefers last local tool JSON; verify `SKILL.md` routing; run `pytest tests/test_output_guard.py` |
 | OpenAI HTTP 400 on `extra_body` | MiniMax params sent to OpenAI | Set `OPENAI_BASE_URL=https://api.openai.com/v1`; `_is_minimax_provider()` omits `extra_body` for non-MiniMax URLs |
 | Learn MCP deprecation warning (SSE) | Old transport docs | Already on `streamable_http`; safe to ignore if tools load |
-| E2E lists 5 files not 8 | Sample data not generated | `python scripts/generate_samples.py` |
+| E2E lists 5 files not 8 | Sample data not generated or legacy `.xlsx` duplicate | Run `./install.py` or `python scripts/generate_samples.py`; delete `species_count_2024.xlsx` if present |
+| Excel sample won't open | Legacy misnamed `.xlsx` (xlwt binary) | Use `species_count_2024.xls`; regenerate samples |
+| Fresh clone: `install.py` fails on dotenv | Deps not installed yet | Installer creates venv first; re-run after Phase 3 or use `--skip-e2e` |
 | Path traversal / access denied | File outside `SEARCH_ROOT` | Use paths relative to sandbox; set `SEARCH_ROOT` correctly |
 | `OPENAI_API_KEY is required` | Missing or empty `.env` | Copy `.env.example` or `.env.openai.example`, set key, restart |
 | Agent create timeout (60s) | Network or MCP unreachable | Check outbound HTTPS to Learn MCP and LLM API |

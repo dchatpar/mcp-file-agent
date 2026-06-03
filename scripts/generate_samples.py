@@ -3,7 +3,7 @@
 Creates 8 files under data/samples/zoology/:
   - 4 PDFs  (.pdf)
   - 1 DOCX  (.docx)
-  - 1 XLSX  (.xlsx)
+  - 1 XLS   (.xls)
   - 1 TXT   (.txt)
   - 1 JPG   (.jpg)
 
@@ -105,7 +105,7 @@ def write_samples(root: Path) -> None:
     )
     doc.save(str(root / "coral_reef_observations.docx"))
 
-    # ── XLSX: species_count_2024.xlsx ──────────────────────────────────────
+    # ── XLS: species_count_2024.xls (xlwt produces Excel 97-2003 binary) ─────
     book = Workbook()
     sheet = book.add_sheet("Species Count")
     headers = ["Species", "Region", "Count_2022", "Count_2023", "IUCN Status"]
@@ -121,7 +121,12 @@ def write_samples(root: Path) -> None:
     for row_idx, row_data in enumerate(data, start=1):
         for col_idx, val in enumerate(row_data):
             sheet.write(row_idx, col_idx, val)
-    book.save(str(root / "species_count_2024.xlsx"))
+    xls_path = root / "species_count_2024.xls"
+    book.save(str(xls_path))
+    # Remove legacy misnamed .xlsx if present (xlwt binary saved as .xlsx will not open)
+    legacy_xlsx = root / "species_count_2024.xlsx"
+    if legacy_xlsx.exists():
+        legacy_xlsx.unlink()
 
     # ── TXT: field_notes_borneo.txt ────────────────────────────────────────
     (root / "field_notes_borneo.txt").write_text(
@@ -165,9 +170,3 @@ if __name__ == "__main__":
         target = Path(__file__).resolve().parents[1] / "data" / "samples" / "zoology"
     write_samples(target)
     print(f"Sample data written to {target}")
-
-
-if __name__ == "__main__":
-    project_root = Path(__file__).resolve().parents[1]
-    write_samples(project_root / "data" / "samples" / "zoology")
-    print("Sample data written.")

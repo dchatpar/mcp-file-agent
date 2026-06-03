@@ -108,7 +108,7 @@ Eight non-technical zoology files under `data/samples/zoology/`:
 | `bird_migration_analysis.pdf` | .pdf |
 | `amphibian_survey_2023.pdf` | .pdf |
 | `coral_reef_observations.docx` | .docx |
-| `species_count_2024.xlsx` | .xlsx |
+| `species_count_2024.xls` | .xls |
 | `field_notes_borneo.txt` | .txt |
 | `jaguar_photo_rainforest.jpg` | .jpg |
 

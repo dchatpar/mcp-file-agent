@@ -16,11 +16,24 @@ End-to-end deployment for the Local File Search MCP Agent: prerequisites through
 
 ---
 
-## Phase 1 ù Clone and build
+## Phase 1 - Clone and build
+
+**Interactive installer (recommended):**
 
 ```bash
-git clone <repo-url>
-cd <repo>
+git clone https://github.com/dchatpar/mcp-file-agent.git
+cd mcp-file-agent
+chmod +x install.py
+./install.py
+```
+
+Flags: `--non-interactive`, `--skip-e2e` (no API key), `--yes` (accept defaults).
+
+**Manual:**
+
+```bash
+git clone https://github.com/dchatpar/mcp-file-agent.git
+cd mcp-file-agent
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 cp .env.example .env          # MiniMax profile
